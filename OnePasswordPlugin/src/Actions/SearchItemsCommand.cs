@@ -11,7 +11,7 @@ namespace Loupedeck.OnePasswordPlugin
             : base(
                 displayName: "Search Items",
                 description: "Searches 1Password item titles without retrieving secret fields.",
-                groupName: "Vault")
+                groupName: "1Password###Vault")
         {
             this.MakeProfileAction("text;Enter a title or keyword to search:");
         }
