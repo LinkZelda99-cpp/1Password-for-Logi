@@ -175,10 +175,15 @@ namespace Loupedeck.OnePasswordPlugin
                     {
                         process.Kill(entireProcessTree: true);
                         process.WaitForExit();
+                        Task.WaitAll(standardOutputTask, standardErrorTask);
                     }
                     catch (InvalidOperationException)
                     {
                         // The process may have exited between the timeout and the kill attempt.
+                    }
+                    catch (Win32Exception)
+                    {
+                        // The operating system may reject a late kill request.
                     }
 
                     return CliExecutionResult.TimedOut();
