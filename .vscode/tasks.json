@@ -55,6 +55,15 @@
       "problemMatcher": []
     },
     {
+      "label": "Uninstall: Legacy Starter",
+      "type": "shell",
+      "command": "logiplugintool uninstall OnePassword",
+      "options": {
+        "cwd": "${workspaceFolder}/OnePasswordPlugin"
+      },
+      "problemMatcher": []
+    },
+    {
       "label": "Uninstall: Plugin",
       "type": "shell",
       "command": "logiplugintool uninstall OnePasswordForLogi",
@@ -64,9 +73,18 @@
       "problemMatcher": []
     },
     {
-      "label": "Clean: Build",
+      "label": "Clean: Release Build",
       "type": "shell",
       "command": "dotnet clean ./OnePasswordPlugin.slnx --configuration Release",
+      "options": {
+        "cwd": "${workspaceFolder}/OnePasswordPlugin"
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Clean + Package + Verify",
+      "type": "shell",
+      "command": "dotnet clean ./OnePasswordPlugin.slnx --configuration Release && dotnet build ./OnePasswordPlugin.slnx --configuration Release && logiplugintool pack ./bin/Release ./OnePasswordForLogi_0_1_0.lplug4 && logiplugintool verify ./OnePasswordForLogi_0_1_0.lplug4",
       "options": {
         "cwd": "${workspaceFolder}/OnePasswordPlugin"
       },
