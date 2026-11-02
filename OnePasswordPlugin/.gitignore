@@ -398,3 +398,10 @@ FodyWeavers.xsd
 *.sln.iml
 
 .DS_Store
+# Local credentials and secret-bearing development files
+.env
+.env.*
+!.env.example
+.secrets/
+secrets.json
+op-service-account-token
