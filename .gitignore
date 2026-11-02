@@ -1,0 +1,22 @@
+# .NET and Visual Studio build output
+**/bin/
+**/obj/
+.vs/
+*.user
+*.suo
+*.pdb
+*.cache
+
+# Local credentials and secret-bearing development files
+.env
+.env.*
+!.env.example
+.secrets/
+secrets.json
+op-service-account-token
+*.pfx
+*.publishsettings
+
+# OS/editor files
+.DS_Store
+Thumbs.db
