@@ -6,7 +6,7 @@ namespace Loupedeck.OnePasswordPlugin
     using System.Text.Json;
     using System.Threading.Tasks;
 
-    internal enum CredentialField
+    public enum CredentialField
     {
         Username,
         Password,
