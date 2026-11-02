@@ -8,38 +8,43 @@ The plugin's marketplace display name is **1Password**. Its internal plugin iden
 
 ## Current status
 
-**Phase 1 — foundation and read-only integration**
+**Phase 2 — expanded actions, pending local validation**
 
 - [x] C# Logi Actions SDK project scaffold
-- [x] 1Password CLI process integration
+- [x] 1Password CLI process integration with bounded timeouts
 - [x] Connection-status action using `op whoami --format json`
 - [x] Read-only item-title search using `op item list --format json`
-- [x] Process timeouts and safe handling of missing CLI/authentication
-- [x] Search reads item metadata only; it does not request passwords, OTPs, or other secret fields
-- [ ] Local build and hardware validation
+- [x] Vault count and favorites count actions
+- [x] Explicit profile actions to copy username, password, or current one-time password
+- [x] Local cryptographically-random password generator with clipboard output
+- [ ] Build validation after the expanded action set
 - [ ] Interactive result selection and item-opening workflow
-- [ ] Carefully gated clipboard actions
-- [ ] Password generator
-- [ ] Developer workflows
+- [ ] Vault/category browsing with selectable results
+- [ ] Clipboard-clearing control and configurable clipboard expiry where supported
+- [ ] Developer credential workflows
 - [ ] Haptics and device-specific polish
 - [ ] Marketplace packaging and review
 
-The first milestone deliberately avoids exposing secret values. It establishes the plugin lifecycle and a small, auditable integration boundary before sensitive actions are added.
+This is not yet a complete 1Password client. The action set is being expanded incrementally and must be built and tested in Logi Options+ before being treated as stable.
 
 ## Requirements
 
 - Logitech Options+ or Loupedeck software with Logi Plugin Service
 - .NET SDK compatible with the project's target framework
-- 1Password desktop app and 1Password CLI
+- 1Password CLI 2
 - A signed-in 1Password CLI session
 
 The CLI executable must be available as `op` in the environment used by Logi Plugin Service. The plugin does not store a 1Password password, Secret Key, CLI token, or session token.
 
-## Actions in this milestone
+## Actions
 
-### 1Password → Connection Status
+All actions are implemented as Logi Actions SDK `PluginDynamicCommand` actions. Parameterized item actions use the SDK's text profile-action format. Group names use the SDK's `###` hierarchy separator.
 
-Runs `op whoami --format json` and reports a simple state on the action:
+### 1Password → Account
+
+**Connection Status**
+
+Runs `op whoami --format json` and reports a simple state:
 
 - Connected
 - Sign in
@@ -49,11 +54,37 @@ Runs `op whoami --format json` and reports a simple state on the action:
 
 It does not display or log the account identity returned by the CLI.
 
-### Vault → Search Items
+### 1Password → Vault
 
-A text profile action accepts a title or keyword, then searches item titles returned by `op item list --format json`.
+**Search Items**
 
-Only title, category, and vault-name metadata are parsed. Secret fields are not requested or displayed. The action shows the first matching title and the number of additional matches.
+A text profile action accepts a title or keyword, then searches item titles returned by `op item list --format json`. Only title, category, and vault-name metadata are parsed.
+
+**List Vaults**
+
+Runs `op vault list --format json` and displays the number of accessible vaults, not their contents.
+
+**Favorites**
+
+Runs `op item list --favorite --format json` and displays the number of favorite items.
+
+### 1Password → Credentials
+
+These profile actions require the exact item title:
+
+- **Copy Username**
+- **Copy Password**
+- **Copy One-Time Password**
+
+The action resolves an exact title match, rejects ambiguous duplicate titles, requests only the selected field, and sends the value directly to the operating-system clipboard. Secret values are never displayed on the device or written to plugin logs.
+
+Clipboard contents may remain available to other apps or clipboard-sync services according to operating-system settings. Use these actions only when you intend to place the selected value on the clipboard.
+
+### 1Password → Tools
+
+**Generate Password**
+
+Generates a 24-character password using .NET's cryptographic random-number generator and copies it to the clipboard. The generated value is not displayed on the device or logged.
 
 ## Development
 
@@ -63,17 +94,20 @@ Open `OnePasswordPlugin/OnePasswordPlugin.slnx` in Visual Studio or build it wit
 dotnet build .\OnePasswordPlugin\OnePasswordPlugin.slnx --configuration Release
 ```
 
-The project uses the official `LogiPluginApi` package and the SDK's development link-file workflow. The build must be validated on a machine with the Logi Plugin Service installed.
+The project uses the official `LogiPluginApi` package and the SDK's development link-file workflow. The expanded action set still needs a fresh local build and hardware validation.
 
 ## Security principles
 
-- Never ask for or store the 1Password account password or Secret Key.
-- Never store CLI session tokens in plugin settings.
+- Never ask for or store the 1Password account password, Secret Key, recovery code, or CLI session token.
 - Never log CLI stdout/stderr or secret values.
-- Do not retrieve passwords, OTPs, or private keys for display on device screens.
-- Keep secret retrieval behind explicit, narrowly scoped user actions.
+- Never display secret values on device screens.
+- Retrieve only the field explicitly requested by the user.
+- Keep secret retrieval behind a direct, explicit user action.
+- Reject ambiguous item-title matches.
+- Do not persistently cache secret values.
 - Use process argument lists rather than shell-concatenated command strings.
 - Apply timeouts to external CLI processes.
+- Explain clipboard exposure: copied values are subject to operating-system clipboard behavior.
 
 See [SECURITY.md](SECURITY.md) for the security model and reporting guidance.
 
