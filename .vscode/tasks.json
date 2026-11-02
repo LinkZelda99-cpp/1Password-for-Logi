@@ -2,7 +2,7 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Build (Debug)",
+      "label": "Build: Debug",
       "type": "shell",
       "command": "dotnet build ./OnePasswordPlugin.slnx --configuration Debug",
       "options": {
@@ -12,7 +12,7 @@
       "problemMatcher": "$msCompile"
     },
     {
-      "label": "Build (Release)",
+      "label": "Build: Release",
       "type": "shell",
       "command": "dotnet build ./OnePasswordPlugin.slnx --configuration Release",
       "options": {
@@ -22,34 +22,55 @@
       "problemMatcher": "$msCompile"
     },
     {
-      "label": "Package Plugin",
+      "label": "Package: Plugin",
       "type": "shell",
-      "command": "logiplugintool pack ./bin/Release ./OnePassword_0_1_0.lplug4",
+      "command": "logiplugintool pack ./bin/Release ./OnePasswordForLogi_0_1_0.lplug4",
       "options": {
         "cwd": "${workspaceFolder}/OnePasswordPlugin"
       },
-      "group": "none",
+      "dependsOn": "Build: Release",
+      "dependsOrder": "sequence",
       "problemMatcher": []
     },
     {
-      "label": "Install Plugin",
+      "label": "Verify: Plugin Package",
       "type": "shell",
-      "command": "logiplugintool install ./OnePassword_0_1_0.lplug4",
+      "command": "logiplugintool verify ./OnePasswordForLogi_0_1_0.lplug4",
       "options": {
         "cwd": "${workspaceFolder}/OnePasswordPlugin"
       },
-      "group": "none",
+      "dependsOn": "Package: Plugin",
+      "dependsOrder": "sequence",
       "problemMatcher": []
     },
     {
-      "label": "Uninstall Plugin",
+      "label": "Install: Plugin",
+      "type": "shell",
+      "command": "logiplugintool install ./OnePasswordForLogi_0_1_0.lplug4",
+      "options": {
+        "cwd": "${workspaceFolder}/OnePasswordPlugin"
+      },
+      "dependsOn": "Verify: Plugin Package",
+      "dependsOrder": "sequence",
+      "problemMatcher": []
+    },
+    {
+      "label": "Uninstall: Plugin",
       "type": "shell",
       "command": "logiplugintool uninstall OnePasswordForLogi",
       "options": {
         "cwd": "${workspaceFolder}/OnePasswordPlugin"
       },
-      "group": "none",
       "problemMatcher": []
+    },
+    {
+      "label": "Clean: Build",
+      "type": "shell",
+      "command": "dotnet clean ./OnePasswordPlugin.slnx --configuration Release",
+      "options": {
+        "cwd": "${workspaceFolder}/OnePasswordPlugin"
+      },
+      "problemMatcher": "$msCompile"
     }
   ]
 }
