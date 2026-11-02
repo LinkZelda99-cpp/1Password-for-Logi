@@ -10,7 +10,7 @@ namespace Loupedeck.OnePasswordPlugin
             : base(
                 displayName: "Connection Status",
                 description: "Checks whether 1Password CLI is installed and authenticated.",
-                groupName: "1Password")
+                groupName: "1Password###Account")
         {
         }
 
