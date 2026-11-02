@@ -18,21 +18,21 @@
     {
       "label": "Package Plugin",
       "type": "shell",
-      "command": "logiplugintool pack ./bin/Release ./OnePassword.lplug4",
+      "command": "logiplugintool pack ./bin/Release ./OnePassword_0_1_0.lplug4",
       "group": "none",
       "problemMatcher": []
     },
     {
       "label": "Install Plugin",
       "type": "shell",
-      "command": "logiplugintool install ./OnePassword.lplug4",
+      "command": "logiplugintool install ./OnePassword_0_1_0.lplug4",
       "group": "none",
       "problemMatcher": []
     },
     {
       "label": "Uninstall Plugin",
       "type": "shell",
-      "command": "logiplugintool uninstall OnePassword",
+      "command": "logiplugintool uninstall OnePasswordForLogi",
       "group": "none",
       "problemMatcher": []
     }
